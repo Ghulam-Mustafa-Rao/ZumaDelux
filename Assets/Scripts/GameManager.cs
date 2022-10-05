@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 [SerializeField]
 public enum States
 {
@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour
 
     public Material[] ballMaterials;
     public States state = States.move;
+
+    public float timeTaken;
+    public int triesLeft;
+    public TextMeshProUGUI timeTakenText;
+    public TextMeshProUGUI triesLeftText;
     private void Awake()
     {
         if (gameManager == null)
@@ -32,12 +37,16 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        //MoveBalls();
     }
     // Update is called once per frame
     void Update()
     {
-        MoveBalls(); 
+        timeTaken += Time.deltaTime;
+        triesLeftText.text = "Tries Left : " + triesLeft;
+        
+        timeTakenText.text = "Time Taken : " + (int)(timeTaken);
+        
     }
 
     IEnumerator SpwanBalls()
@@ -45,13 +54,18 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             yield return new WaitForSeconds(waitTime);
-            GameManager.gameManager.ballsInGame.Add(Instantiate(ballOnPlanePrefab, Nodes[0].transform.position, Quaternion.identity));
+            GameObject ball = Instantiate(ballOnPlanePrefab, Nodes[0].transform.position, Quaternion.identity);
+            //set ball colorId and Color
+            ball.GetComponent<BallOnPlane>().colorID = Random.Range(0, ballMaterials.Length);
+            ball.GetComponent<Renderer>().material = ballMaterials[ball.GetComponent<BallOnPlane>().colorID];
+            //add it to list
+            ballsInGame.Add(ball);
         }
     }
 
-    void MoveBalls()
+    public void MoveBalls()
     {
-        if(ballsInGame.Count>3)
+        if (ballsInGame.Count > 3 && state == States.move)
         {
             if (Vector3.Distance(ballsInGame[ballsInGame.Count - 2].transform.position, ballsInGame[ballsInGame.Count - 1].transform.position) < 0.9f)
             {

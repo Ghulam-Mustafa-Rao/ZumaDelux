@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BallOnPlane : BallsParent
 {
-    public bool isMoving = false;
+    public bool isMoving = true;
     public int nextNodeIndex;
     private void Awake()
     {
@@ -21,8 +21,8 @@ public class BallOnPlane : BallsParent
     {
         if (GameManager.gameManager.ballsInGame.FindIndex(a => a.Equals(this.gameObject)) == GameManager.gameManager.ballsInGame.Count - 1)
             isMoving = true;
-        if (isMoving)
-            transform.position = Vector3.MoveTowards(transform.position, GameManager.gameManager.Nodes[nextNodeIndex].transform.position, 1f * Time.deltaTime);
+        if (isMoving && GameManager.gameManager.state== States.move)
+            transform.position = Vector3.MoveTowards(transform.position, GameManager.gameManager.Nodes[nextNodeIndex].transform.position, speed * Time.deltaTime);
         if (Vector3.Distance(transform.position, GameManager.gameManager.Nodes[nextNodeIndex].transform.position) < 0.01f)
         {
             if (nextNodeIndex < GameManager.gameManager.Nodes.Count - 1)

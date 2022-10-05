@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BallsParent : MonoBehaviour
 {
-    public Color color;
+    public int colorID;
+    public float speed;
     // Start is called before the first frame update
     void Start()
     {
